@@ -1,7 +1,10 @@
 package com.alex.galinperrcster.action;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import com.alex.galinperrcster.misc.FileToProcess;
@@ -21,12 +24,21 @@ public class Worker
 	/**
 	 * Variables
 	 */
+	private long startTime;
+	private long elapsedTime;
+	private Date myDate;
+	private SimpleDateFormat timeFormat;
 	
 	/**
 	 * Constructor
 	 */
 	public Worker()
 		{
+		startTime = 0;
+		timeFormat = new SimpleDateFormat("mm:ss:SSS");
+		timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		myDate = new Date();
+		
 		try
 			{
 			/*****************************
@@ -70,65 +82,6 @@ public class Worker
 			/***********
 			 * We then process the files
 			 */
-			
-			/*
-			for(FileToProcess ftp : filesToProcess)
-				{
-				Variables.getLogger().info("Processing the following file : "+ftp.getFileName());
-				//We get the header line
-				String[] headers = ftp.getFirstLine().split(UsefulMethod.getTargetOption("separator"));
-				for(int i=0; i<headers.length; i++)
-					{
-					for(Header h : headerList)
-						{
-						if(Pattern.matches(h.getHeader(), headers[i]))
-							{
-							//The header match so we apply the template for all the line
-							Variables.getLogger().debug("The header match the pattern : "+headers[i]+" = "+h.getHeader());
-							Variables.getLogger().debug("So we apply the following template to all the lines : "+h.getTemplateName());
-							
-							SubstituteTemplate myTemplate = null;
-							for(SubstituteTemplate st : substituteTemplateList)
-								{
-								if(st.getName().equals(h.getTemplateName()))myTemplate = st;
-								}
-							if(myTemplate == null)
-								{
-								Variables.getLogger().error("Template name \""+h.getTemplateName()+"\"not found so we ignore this header");
-								continue;
-								}
-							
-							for(int j=0; j<ftp.getLines().size(); j++)
-								{
-								String line = ftp.getLines().get(j);
-								String[] params = line.split(UsefulMethod.getTargetOption("separator"));
-								for(Substitute sub : myTemplate.getSubstituteList())
-									{		
-									if((i<params.length) && (Pattern.matches(sub.getPattern(), params[i])))
-										{
-										params[i] = UsefulMethod.doRegex(params[i], sub.getReplaceBy());
-										break;//To avoid matching another substitute
-										}
-									}
-								StringBuffer newLine = new StringBuffer("");
-								for(int a=0; a<params.length; a++)
-									{
-									newLine.append(params[a]);
-									if(a != params.length-1)newLine.append(UsefulMethod.getTargetOption("separator"));//To remove the last separator
-									}
-								ftp.getLines().set(j, newLine.toString());
-								Variables.getLogger().debug("New line : "+newLine.toString());
-								}
-							break;//To avoid matching another template
-							}
-						}
-					System.gc();
-					}
-				//We write the new file version
-				UsefulMethod.writeModifiedFile(ftp, Variables.getMainDirectory()+"/"+UsefulMethod.getTargetOption("filedirectory"));
-				}*/
-			/*********/
-		
 			for(FileToProcess ftp : filesToProcess)
 				{
 				Variables.getLogger().info("Processing the following file : "+ftp.getFileName());
@@ -217,12 +170,16 @@ public class Worker
 					else if(modified)
 						{
 						//We then reassemble the line with the new value
+						String separator = UsefulMethod.getTargetOption("separator");
 						StringBuffer newLine = new StringBuffer("");
+						
 						for(int a=0; a<params.length; a++)
 							{
 							newLine.append(params[a]);
-							if(a != params.length-1)newLine.append(UsefulMethod.getTargetOption("separator"));//To remove the last separator
+							//if(a != params.length-1)newLine.append(UsefulMethod.getTargetOption("separator"));//To remove the last separator
+							if(a != params.length-1)newLine.append(separator);//To remove the last separator
 							}
+						
 						ftp.getLines().set(j, newLine.toString());
 						Variables.getLogger().info("Line "+index+" after : "+ftp.getLines().get(j));
 						}
@@ -234,13 +191,36 @@ public class Worker
 					System.gc();//To avoid memory leak
 					}
 				//Finally we write the new file version
-				UsefulMethod.writeModifiedFile(ftp, Variables.getMainDirectory()+"/"+UsefulMethod.getTargetOption("filedirectory"));
+				String directoryPath;
+				if(UsefulMethod.getTargetOption("donotoverwrite").equals("true"))
+					{
+					//We do not overwrite the file. So we put it in a new directory
+					Variables.getLogger().info("The configuration file ask to not overwrite the source file. So we create a copy in a new directory");
+					
+					directoryPath = Variables.getMainDirectory()+"/"+
+					UsefulMethod.getTargetOption("filedirectory")+"/"+
+					UsefulMethod.getTargetOption("newfiledirectory");
+					
+					//We check if the directory exists
+					UsefulMethod.createDirectory(directoryPath);
+					}
+				else
+					{
+					directoryPath = Variables.getMainDirectory()+"/"+UsefulMethod.getTargetOption("filedirectory");
+					}
+				
+				
+				UsefulMethod.writeModifiedFile(ftp, directoryPath);
 				}
 			}
 		catch (Exception e)
 			{
 			Variables.getLogger().error("ERROR : Something went wrong : "+e.getMessage(), e);
 			}
+		
+		elapsedTime = System.currentTimeMillis() - startTime;
+		myDate.setTime(elapsedTime);
+		Variables.getLogger().debug("Total processing time : "+timeFormat.format(myDate));
 		}
 	
 

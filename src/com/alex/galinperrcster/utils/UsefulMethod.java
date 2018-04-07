@@ -533,5 +533,24 @@ public class UsefulMethod
 		throw new Exception();
 		}
 	
+	/**
+	 * Method used to check if a directory exists
+	 * and if not, to create it
+	 */
+	public static void createDirectory(String directoryPath) throws Exception
+		{
+		File myD = new File(directoryPath);
+		if(myD.exists())
+			{
+			//We do nothing
+			}
+		else
+			{
+			//We create it
+			myD.mkdir();
+			Variables.getLogger().info("Directory created : "+directoryPath);
+			}
+		}
+	
 	/*2018*//*Alexandre RATEL 8)*/
 	}

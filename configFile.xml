@@ -12,5 +12,7 @@ Overal configuration file
 		<templatefile>templateFile.xml</templatefile>
 		<substitutefile>substituteFile.xml</substitutefile>
 		<deleteifnomatch>true</deleteifnomatch><!--true,false-->
+		<donotoverwrite>true</donotoverwrite><!--true,false-->
+		<newfiledirectory>Updated</newfiledirectory><!--Directory name to get the updated files-->
 	</config>
 </xml>
