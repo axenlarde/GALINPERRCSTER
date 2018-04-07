@@ -1,0 +1,16 @@
+﻿<!--
+Overal configuration file
+-->
+
+<xml>
+	<config>
+		<!--Misc-->
+		<log4j>DEBUG</log4j><!--Logging level : ERROR,INFO,DEBUG-->
+		<separator>,</separator>
+		<allowedfiles>txt,csv</allowedfiles>
+		<filedirectory>Files</filedirectory>
+		<templatefile>templateFile.xml</templatefile>
+		<substitutefile>substituteFile.xml</substitutefile>
+		<deleteifnomatch>true</deleteifnomatch><!--true,false-->
+	</config>
+</xml>

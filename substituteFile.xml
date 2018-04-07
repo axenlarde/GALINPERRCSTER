@@ -1,0 +1,26 @@
+<!--
+
+File used to list the substitute template to apply
+
+<substitute>Regex pattern to match:New value</substitute>
+
+-->
+
+<xml>
+	<template>
+		<name>default</name>
+		<substitute>DP002:*delete*</substitute>
+		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
+		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
+		<substitute>7\d{4}:'77'+*</substitute>
+		<substitute>8\d{4}:'88'+*</substitute>
+		<substitute>\d{5}:'33'+*</substitute>
+	</template>
+	<template>
+		<name>css</name>
+		<substitute>\d{3}tout.*:'ALL_CSS'</substitute>
+		<substitute>\d{3}international:'ALL_CSS'</substitute>
+		<substitute>\d{3}interne:'INTERNAL_FRANCE_CSS'</substitute>
+		<substitute>\d{3}\w*:'NATGSMSPC_FRANCE_CSS'</substitute>
+	</template>
+</xml>

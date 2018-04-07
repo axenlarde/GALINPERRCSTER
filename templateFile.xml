@@ -1,0 +1,18 @@
+<!--
+
+File used to list the headers and the template to use in case of
+substitution
+
+<header>Header column name:template to apply for this column</header>
+
+The header name is a regex pattern
+
+-->
+
+<xml>
+	<headers>
+		<header>Device Pool:default</header>
+		<header>.*CSS.*:css</header>
+		<header>Directory Number \d:default</header>
+	</headers>
+</xml>
