@@ -11,7 +11,8 @@ The header name is a regex pattern
 
 <xml>
 	<headers>
-		<header>Device Pool:default</header>
+		<header>Device Pool:devicepool</header>
+		<header>CSS:devicecss</header>
 		<header>.*CSS.*:css</header>
 		<header>Directory Number \d:default</header>
 	</headers>

@@ -325,7 +325,7 @@ public class UsefulMethod
 			}
 		}
 	
-	public static String doRegex(String currentValue, String patternToApply) throws Exception
+	public static String doRegex(String currentValue, String patternToApply, FileToProcess ftp, int lineNumber) throws Exception
 		{
 		String[] tab = patternToApply.split("\\+");
 		StringBuffer mySB = new StringBuffer(""); 
@@ -334,7 +334,30 @@ public class UsefulMethod
 			{
 			s = s.replace("'", "");
 			
-			if(s.contains("*"))
+			if(s.startsWith("*Get "))//Manage the *Get* special features
+				{
+				String columnName = s.split("\\*")[1].substring(4);//To get the column name
+				//We now get the value according to the column name
+				String separator = UsefulMethod.getTargetOption("separator");
+				String[] headers = ftp.getFirstLine().split(separator);
+				String lineValue = null;
+				
+				for(int i=0; i<headers.length; i++)
+					{
+					if(headers[i].equals(columnName))
+						{
+						lineValue = ftp.getLines().get(lineNumber).split(separator, -1)[i];
+						break;
+						}
+					}
+				
+				if(lineValue == null)throw new Exception("lineValue should not be null");
+				
+				String st = "*Get "+columnName+"*";
+				s = s.substring(st.length());//Remove the get pattern
+				mySB.append(applyRegex(lineValue, s));
+				}
+			else if(s.contains("*"))
 				{
 				mySB.append(applyRegex(currentValue, s));
 				}
@@ -550,6 +573,30 @@ public class UsefulMethod
 			myD.mkdir();
 			Variables.getLogger().info("Directory created : "+directoryPath);
 			}
+		}
+	
+	/**
+	 * Method used to check a CSV file integrity
+	 * 
+	 * We basically check if the line have got the same length than the headers line (first line)
+	 * @param ftp
+	 * @return
+	 * @throws Exception 
+	 */
+	public static ArrayList<Integer> checkCSVFileIntegrity(FileToProcess ftp) throws Exception
+		{
+		Variables.getLogger().debug("We check for the following file integrity : "+ftp.getFileName());
+		String separator = UsefulMethod.getTargetOption("separator");
+		String[] headers = ftp.getFirstLine().split(separator);
+		ArrayList<Integer> errorList = new ArrayList<Integer>();
+		
+		for(String line : ftp.getLines())
+			{
+			String[] params = line.split(separator, -1);//-1 is to keep empty values
+			if(params.length != headers.length)errorList.add(new Integer(ftp.getLines().indexOf(line)+2));
+			}
+		
+		return errorList;
 		}
 	
 	/*2018*//*Alexandre RATEL 8)*/

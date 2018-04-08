@@ -34,13 +34,15 @@ public class Worker
 	 */
 	public Worker()
 		{
-		startTime = 0;
+		startTime = System.currentTimeMillis();
 		timeFormat = new SimpleDateFormat("mm:ss:SSS");
 		timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		myDate = new Date();
 		
 		try
 			{
+			String separator = UsefulMethod.getTargetOption("separator");
+			
 			/*****************************
 			 * We get the following files :
 			 * - Substitute file
@@ -86,7 +88,22 @@ public class Worker
 				{
 				Variables.getLogger().info("Processing the following file : "+ftp.getFileName());
 				
-				String[] headers = ftp.getFirstLine().split(UsefulMethod.getTargetOption("separator"));//We get the headers
+				//If asked we check the file integrity
+				if(UsefulMethod.getTargetOption("checkforintegrity").equals("true"))
+					{
+					ArrayList<Integer> errorList = UsefulMethod.checkCSVFileIntegrity(ftp);
+					if(errorList.size() != 0)
+						{
+						Variables.getLogger().error("The file integrity is incorrect. The following lines are incorrect :");
+						for(Integer error : errorList)
+							{
+							Variables.getLogger().error(" "+error);
+							}
+						throw new Exception("The file integrity is incorrect. Check the logs for more detail");
+						}
+					}
+				
+				String[] headers = ftp.getFirstLine().split(separator);//We get the headers
 				
 				for(int j=0; j<ftp.getLines().size(); j++)
 					{
@@ -97,13 +114,14 @@ public class Worker
 					
 					boolean modified = false;
 					boolean toDelete = false;
-					String[] params = line.split(UsefulMethod.getTargetOption("separator"));
+					String[] params = line.split(separator, -1);//-1 do not remove the empty values
 					
 					for(int i=0; i<headers.length; i++)
 						{
+						boolean foundMatchingHeader = false;
 						for(Header h : headerList)
 							{
-							if(Pattern.matches(h.getHeader(), headers[i]))
+							if((!foundMatchingHeader) && (Pattern.matches(h.getHeader(), headers[i])))
 								{
 								SubstituteTemplate myTemplate = null;
 								for(SubstituteTemplate st : substituteTemplateList)
@@ -111,6 +129,7 @@ public class Worker
 									if(st.getName().equals(h.getTemplateName()))
 										{
 										myTemplate = st;
+										foundMatchingHeader = true; //To avoid matching another header at the next loop
 										break;//To avoid matching another template
 										}
 									}
@@ -120,7 +139,7 @@ public class Worker
 									}
 								
 								for(Substitute sub : myTemplate.getSubstituteList())
-									{		
+									{
 									if((i<params.length) && (Pattern.matches(sub.getPattern(), params[i])))
 										{
 										Variables.getLogger().debug("Line "+index+" the value \""+params[i]+"\" matched the pattern \""+sub.getPattern()+"\"");
@@ -135,7 +154,7 @@ public class Worker
 											}
 										else
 											{
-											params[i] = UsefulMethod.doRegex(params[i], sub.getReplaceBy());
+											params[i] = UsefulMethod.doRegex(params[i], sub.getReplaceBy(), ftp, j);
 											Variables.getLogger().debug("Line "+index+" new value after replacement : "+params[i]);
 											modified = true;
 											}
@@ -170,7 +189,6 @@ public class Worker
 					else if(modified)
 						{
 						//We then reassemble the line with the new value
-						String separator = UsefulMethod.getTargetOption("separator");
 						StringBuffer newLine = new StringBuffer("");
 						
 						for(int a=0; a<params.length; a++)

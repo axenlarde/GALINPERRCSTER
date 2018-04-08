@@ -2,19 +2,42 @@
 
 File used to list the substitute template to apply
 
-<substitute>Regex pattern to match:New value</substitute>
+<substitute>Regex pattern to match:New pattern value</substitute>
+
+Pattern rules :
+use + to concatenate values
+*x_* keeps only the x first characters
+*_x* keeps only the x last characters
+*m* put the string in lower case
+*M* put the string in upper case
+*xm* put only the first x characters in lower case
+*xM* put only the first x characters in upper case
+*xRy* replace the x string by the y string
+*xSy* split the string using the y character and then keeps the x occurrence
+* just paste the original string
+
+Regex example (normal java regex):
+ - \d{x} match 3 digit
+ - ^(?!DP002).*$ match everything except DP002
 
 -->
 
 <xml>
 	<template>
-		<name>default</name>
+		<name>devicepool</name>
 		<substitute>DP002:*delete*</substitute>
+	</template>
+	<template>
+		<name>default</name>
 		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
 		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
 		<substitute>7\d{4}:'77'+*</substitute>
 		<substitute>8\d{4}:'88'+*</substitute>
 		<substitute>\d{5}:'33'+*</substitute>
+	</template>
+	<template>
+		<name>devicecss</name>
+		<substitute>.*:*Get Device Pool**_3*+'_DEVICE_CSS'</substitute>
 	</template>
 	<template>
 		<name>css</name>
