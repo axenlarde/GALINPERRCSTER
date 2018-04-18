@@ -135,14 +135,32 @@ public class Worker
 									}
 								if(myTemplate == null)
 									{
-									continue;
+									//No template have been found so we just apply the pattern has it is. Normally it is what the user asked
+									params[i] = UsefulMethod.doRegex(params[i], h.getTemplateName(), ftp, j);
+									Variables.getLogger().debug("Line "+index+" new value after replacement : "+params[i]);
+									modified = true;
+									
+									continue;//To avoid to use the substitute template
 									}
 								
 								for(Substitute sub : myTemplate.getSubstituteList())
 									{
-									if((i<params.length) && (Pattern.matches(sub.getPattern(), params[i])))
+									String pattern = sub.getPattern();
+									String value = params[i];
+									
+									if(pattern.startsWith("*Get "))//Manage the *Get* special feature
 										{
-										Variables.getLogger().debug("Line "+index+" the value \""+params[i]+"\" matched the pattern \""+sub.getPattern()+"\"");
+										String columnName = pattern.split("\\*")[1].substring(4);//To get the column name
+										//We now get the value according to the column name
+										value = UsefulMethod.getValue(ftp, columnName, j);
+										
+										String st = "*Get "+columnName+"*";
+										pattern = pattern.substring(st.length());//Remove the get pattern
+										}
+									
+									if((i<params.length) && (Pattern.matches(pattern, value)))
+										{
+										Variables.getLogger().debug("Line "+index+" the value \""+value+"\" matched the pattern \""+pattern+"\"");
 										
 										/**
 										 * If the *delete* tag is found we delete the whole line

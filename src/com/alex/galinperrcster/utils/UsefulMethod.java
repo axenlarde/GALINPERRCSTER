@@ -334,28 +334,15 @@ public class UsefulMethod
 			{
 			s = s.replace("'", "");
 			
-			if(s.startsWith("*Get "))//Manage the *Get* special features
+			if(s.startsWith("*Get "))//Manage the *Get* special feature
 				{
 				String columnName = s.split("\\*")[1].substring(4);//To get the column name
 				//We now get the value according to the column name
-				String separator = UsefulMethod.getTargetOption("separator");
-				String[] headers = ftp.getFirstLine().split(separator);
-				String lineValue = null;
-				
-				for(int i=0; i<headers.length; i++)
-					{
-					if(headers[i].equals(columnName))
-						{
-						lineValue = ftp.getLines().get(lineNumber).split(separator, -1)[i];
-						break;
-						}
-					}
-				
-				if(lineValue == null)throw new Exception("lineValue should not be null");
+				String value = getValue(ftp, columnName, lineNumber);
 				
 				String st = "*Get "+columnName+"*";
 				s = s.substring(st.length());//Remove the get pattern
-				mySB.append(applyRegex(lineValue, s));
+				mySB.append(applyRegex(value, s));
 				}
 			else if(s.contains("*"))
 				{
@@ -381,134 +368,142 @@ public class UsefulMethod
 		{
 		try
 			{
-			/*********
-			 * Number before
-			 **/
-			if(Pattern.matches("\\*\\d+_\\*.*", param))
+			String[] patternTab = param.split("\\*");
+			for(String pattern : patternTab)
 				{
-				int number = howMany("\\*\\d+_\\*", param);
-				if(newValue.length() >= number)
+				if(!pattern.equals(""))
 					{
-					newValue = newValue.substring(0, number);
+					if(Pattern.matches("\\d+_", pattern))
+						{
+						/*******
+						 * Keep only the beginning
+						 * 
+						 * Example : *3_*
+						 * Keep only the 3 first characters
+						 */
+						int number = howMany("\\d+_", pattern);
+						if(newValue.length() >= number)
+							{
+							newValue = newValue.substring(0, number);
+							}
+						}
+					else if(Pattern.matches("_\\d+", pattern))
+						{
+						/*******
+						 * Keep only the end
+						 * 
+						 * Example : *_4*
+						 * Keep only the 4 last characters
+						 */
+						int number = howMany("_\\d+", pattern);
+						if(newValue.length() >= number)
+							{
+							newValue = newValue.substring(newValue.length()-number, newValue.length());
+							}
+						}
+					else if(Pattern.matches("M", pattern))
+						{
+						/*******
+						 * Uppercase
+						 * 
+						 * Example : *M*
+						 * Put the value in uppercase
+						 */
+						newValue = newValue.toUpperCase();
+						}
+					else if(Pattern.matches("\\d+M", pattern))
+						{
+						/*******
+						 * Put the beginning in uppercase
+						 * 
+						 * Example : *1M*
+						 * Put only the first character in uppercase and the rest in lowercase
+						 */
+						int majuscule = howMany("\\d+M", pattern);
+						if(newValue.length() >= majuscule)
+							{
+							String first = newValue.substring(0, majuscule);
+							String last = newValue.substring(majuscule,newValue.length());
+							first = first.toUpperCase();
+							last = last.toLowerCase();
+							newValue = first+last;
+							}
+						}
+					else if(Pattern.matches("m", pattern))
+						{
+						/*******
+						 * Lowercase
+						 * 
+						 * Example : *m*
+						 * Put the value in lowercase
+						 */
+						newValue = newValue.toLowerCase();
+						}
+					else if(Pattern.matches("\\d+m", pattern))
+						{
+						/*******
+						 * Put the beginning in lowercase
+						 * 
+						 * Example : *1m*
+						 * Put only the first character in lowercase and the rest in uppercase
+						 */
+						int minuscule = howMany("\\d+m", pattern);
+						if(newValue.length() >= minuscule)
+							{
+							String first = newValue.substring(0, minuscule);
+							String last = newValue.substring(minuscule,newValue.length());
+							first = first.toLowerCase();
+							last = last.toUpperCase();
+							newValue = first+last;
+							}
+						}
+					else if(Pattern.matches("\\d+S.+", pattern))
+						{
+						/*************
+						 * Split
+						 * 
+						 * Example : *1S/*
+						 * Split the value using "/" and keeps the first result
+						 **/
+						int split = howMany("\\d+S.+", pattern);
+						String splitter = getSplitter("\\d+S.+", pattern);
+						newValue = newValue.split(splitter)[split-1];
+						}
+					else if(Pattern.matches(".+ R .*", pattern))
+						{
+						/*************
+						 * Replace
+						 * 
+						 * Example : *before R after*
+						 * Replace before by after
+						 **/
+						String pat = null;
+						String replaceBy = null;
+						Pattern begin = Pattern.compile(".+ R");
+						Matcher mBegin = begin.matcher(pattern);
+						Pattern end = Pattern.compile("R .*");
+						Matcher mEnd = end.matcher(pattern);
+						
+						if(mBegin.find())
+							{
+							String str = mBegin.group();
+							str = str.substring(0,str.length()-2);//We remove the " R"
+							pat = str;
+							}
+						if(mEnd.find())
+							{
+							String str = mEnd.group();
+							str = str.substring(2,str.length());//We remove the "R "
+							replaceBy = str;
+							}
+						if((pat != null) && (replaceBy != null))
+							{
+							newValue = newValue.replace(pat, replaceBy);
+							}
+						}
 					}
 				}
-			/**
-			 * End number before
-			 *************/
 			
-			/*********
-			 * Number after
-			 **/
-			if(Pattern.matches("\\*_\\d+\\*.*", param))
-				{
-				int number = howMany("\\*_\\d+\\*", param);
-				if(newValue.length() >= number)
-					{
-					newValue = newValue.substring(newValue.length()-number, newValue.length());
-					}
-				}
-			/**
-			 * End number after
-			 *************/
-			
-			/*************
-			 * Majuscule
-			 **/
-			if(Pattern.matches(".*\\*M\\*.*", param))
-				{
-				newValue = newValue.toUpperCase();
-				}
-			if(Pattern.matches(".*\\*\\d+M\\*.*", param))
-				{
-				int majuscule = howMany("\\*\\d+M\\*", param);
-				if(newValue.length() >= majuscule)
-					{
-					String first = newValue.substring(0, majuscule);
-					String last = newValue.substring(majuscule,newValue.length());
-					first = first.toUpperCase();
-					last = last.toLowerCase();
-					newValue = first+last;
-					}
-				}
-			/**
-			 * End majuscule
-			 ****************/
-			
-			/*************
-			 * Minuscule
-			 **/
-			if(Pattern.matches(".*\\*m\\*.*", param))
-				{
-				newValue = newValue.toLowerCase();
-				}
-			if(Pattern.matches(".*\\*\\d+m\\*.*", param))
-				{
-				int minuscule = howMany("\\*\\d+m\\*", param);
-				if(newValue.length() >= minuscule)
-					{
-					String first = newValue.substring(0, minuscule);
-					String last = newValue.substring(minuscule,newValue.length());
-					first = first.toLowerCase();
-					last = last.toUpperCase();
-					newValue = first+last;
-					}
-				}
-			/**
-			 * End minuscule
-			 ****************/
-			
-			/*************
-			 * Split
-			 * 
-			 * Example : *1S/*
-			 * means to split using "/" and to keep the first value
-			 **/
-			if(Pattern.matches(".*\\*\\d+S.+\\*.*", param))
-				{
-				int split = howMany("\\*\\d+S.+\\*", param);
-				String splitter = getSplitter("\\*\\d+S.+\\*", param);
-				newValue = newValue.split(splitter)[split-1];
-				}
-			/**
-			 * End Split
-			 ****************/
-			
-			/*************
-			 * Replace
-			 * 
-			 * Example : *"test"R"testo"*
-			 **/
-			if(Pattern.matches(".*\\*\".+\"R\".*\"\\*.*", param))
-				{
-				String pattern = null;
-				String replaceBy = null;
-				Pattern begin = Pattern.compile("\".+\"R");
-				Matcher mBegin = begin.matcher(param);
-				Pattern end = Pattern.compile("R\".*\"");
-				Matcher mEnd = end.matcher(param);
-				
-				if(mBegin.find())
-					{
-					String str = mBegin.group();
-					str = str.substring(0,str.length()-1);//We remove the "R"
-					str = str.replace("\"", "");
-					pattern = str;
-					}
-				if(mEnd.find())
-					{
-					String str = mEnd.group();
-					str = str.substring(1,str.length());//We remove the "R"
-					str = str.replace("\"", "");
-					replaceBy = str;
-					}
-				if((pattern != null) && (replaceBy != null))
-					{
-					newValue = newValue.replace(pattern, replaceBy);
-					}
-				}
-			/**
-			 * End Replace
-			 ****************/
 			return newValue;
 			}
 		catch(Exception exc)
@@ -550,7 +545,7 @@ public class UsefulMethod
 		
 		if(m.find())
 			{
-			String temp = m.group().replace("*", "");
+			String temp = m.group();
 			return temp.split("S")[1];
 			}
 		throw new Exception();
@@ -597,6 +592,35 @@ public class UsefulMethod
 			}
 		
 		return errorList;
+		}
+	
+	/**
+	 * Method used to get a value from the csv file
+	 * We use the column name and the row number to target it
+	 * 
+	 * @param columnName
+	 * @param lineIndex
+	 * @return
+	 * @throws Exception 
+	 */
+	public static String getValue(FileToProcess ftp, String columnName, int lineNumber) throws Exception
+		{
+		String separator = UsefulMethod.getTargetOption("separator");
+		String[] headers = ftp.getFirstLine().split(separator);
+		String value = null;
+		
+		for(int i=0; i<headers.length; i++)
+			{
+			if(headers[i].equals(columnName))
+				{
+				value = ftp.getLines().get(lineNumber).split(separator, -1)[i];
+				break;
+				}
+			}
+		
+		if(value == null)throw new Exception("lineValue should not be null. It probably means that the provided column name doesn't exists : "+columnName);
+		
+		return value;
 		}
 	
 	/*2018*//*Alexandre RATEL 8)*/

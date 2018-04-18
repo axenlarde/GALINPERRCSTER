@@ -15,18 +15,58 @@ use + to concatenate values
 *xRy* replace the x string by the y string
 *xSy* split the string using the y character and then keeps the x occurrence
 * just paste the original string
+*delete* delete the entire line
+*Get xxxx* get the content of the column xxxx of the same line
+
+You can use more than multiple ones : *5_**_3**M*
 
 Regex example (normal java regex):
  - \d{x} match 3 digit
  - ^(?!DP002).*$ match everything except DP002
 
 -->
-
 <xml>
+
+<!--FXS Port-->
+	<template>
+		<name>default</name>
+		<substitute>defaut:'DEFAULT_P'</substitute>
+		<substitute>7\d{4}:'77'+*</substitute>
+		<substitute>8\d{4}:'88'+*</substitute>
+		<substitute>\d{5}:'33'+*</substitute>
+	</template>
 	<template>
 		<name>devicepool</name>
-		<substitute>DP002:*delete*</substitute>
+		<substitute>*Get LINE CSS*.*RNIS.*:*_3*+'_NoBTIP_DP'</substitute>
+		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
+		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
 	</template>
+	<template>
+		<name>devicecss</name>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_DEVICE_CSS'</substitute>
+	</template>
+	<template>
+		<name>css</name>
+		<substitute>\d{3}tout.*:'ALL_CSS'</substitute>
+		<substitute>\d{3}international:'ALL_CSS'</substitute>
+		<substitute>.*BTIP.*:*</substitute>
+		<substitute>.*RNIS.*:*</substitute>
+		<substitute>\d{3}interne:'INTERNAL_FRANCE_CSS'</substitute>
+		<substitute>\d{3}\w*:'NATGSMSPC_FRANCE_CSS'</substitute>
+	</template>
+	<template>
+		<name>forwardcss</name>
+		<substitute>\d{3}interne.*:'FW_INTERNAL_FRANCE_CSS'</substitute><!--CSS-->
+		<substitute>\d{3}\w*:'FW_NATGSM_FRANCE_CSS'</substitute><!--CSS-->
+	</template>
+	<template>
+		<name>urgentpriority</name>
+		<substitute>f:'t'</substitute><!--CSS-->
+	</template>
+</xml>
+
+<!--Gateway-->
+<!--
 	<template>
 		<name>default</name>
 		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
@@ -37,13 +77,66 @@ Regex example (normal java regex):
 	</template>
 	<template>
 		<name>devicecss</name>
-		<substitute>.*:*Get Device Pool**_3*+'_DEVICE_CSS'</substitute>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_DEVICE_CSS'</substitute>
+	</template>
+	<template>
+		<name>calledcss</name>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_CALLED_OUT_CSS'</substitute>
+	</template>
+	<template>
+		<name>callingcss</name>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_CALLING_OUT_CSS'</substitute>
+	</template>
+	<template>
+		<name>false</name>
+		<substitute>.*:'f'</substitute>
+	</template>
+	<template>
+		<name>prefixe</name>
+		<substitute>.*:'33'</substitute>
+	</template>
+-->
+
+
+<!--Phone-->
+<!--
+<template>
+		<name>default</name>
+		<substitute>defaut:'DEFAULT_P'</substitute>
+		<substitute>7\d{4}:'77'+*</substitute>
+		<substitute>8\d{4}:'88'+*</substitute>
+		<substitute>\d{5}:'33'+*</substitute>
+	</template>
+	<template>
+		<name>devicepool</name>
+		<substitute>*Get LINE CSS*.*RNIS.*:*_3*+'_NoBTIP_DP'</substitute>
+		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
+		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
+	</template>
+	<template>
+		<name>devicecss</name>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_DEVICE_CSS'</substitute>
 	</template>
 	<template>
 		<name>css</name>
 		<substitute>\d{3}tout.*:'ALL_CSS'</substitute>
 		<substitute>\d{3}international:'ALL_CSS'</substitute>
+		<substitute>.*BTIP.*:*</substitute>
+		<substitute>.*RNIS.*:*</substitute>
 		<substitute>\d{3}interne:'INTERNAL_FRANCE_CSS'</substitute>
 		<substitute>\d{3}\w*:'NATGSMSPC_FRANCE_CSS'</substitute>
 	</template>
-</xml>
+	<template>
+		<name>forwardcss</name>
+		<substitute>\d{3}interne.*:'FW_INTERNAL_FRANCE_CSS'</substitute>
+		<substitute>\d{3}\w*:'FW_NATGSM_FRANCE_CSS'</substitute>
+	</template>
+	<template>
+		<name>urgentpriority</name>
+		<substitute>f:'t'</substitute>
+	</template>
+	<template>
+		<name>subscribecss</name>
+		<substitute>.*:'SUBSCRIBE_CSS'</substitute>
+	</template>
+-->
