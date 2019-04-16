@@ -28,79 +28,8 @@ Regex example (normal java regex):
 <xml>
 
 <!--FXS Port-->
-	<template>
-		<name>default</name>
-		<substitute>defaut:'DEFAULT_P'</substitute>
-		<substitute>7\d{4}:'77'+*</substitute>
-		<substitute>8\d{4}:'88'+*</substitute>
-		<substitute>\d{5}:'33'+*</substitute>
-	</template>
-	<template>
-		<name>devicepool</name>
-		<substitute>*Get LINE CSS*.*RNIS.*:*_3*+'_NoBTIP_DP'</substitute>
-		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
-		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
-	</template>
-	<template>
-		<name>devicecss</name>
-		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_DEVICE_CSS'</substitute>
-	</template>
-	<template>
-		<name>css</name>
-		<substitute>\d{3}tout.*:'ALL_CSS'</substitute>
-		<substitute>\d{3}international:'ALL_CSS'</substitute>
-		<substitute>.*BTIP.*:*</substitute>
-		<substitute>.*RNIS.*:*</substitute>
-		<substitute>\d{3}interne:'INTERNAL_FRANCE_CSS'</substitute>
-		<substitute>\d{3}\w*:'NATGSMSPC_FRANCE_CSS'</substitute>
-	</template>
-	<template>
-		<name>forwardcss</name>
-		<substitute>\d{3}interne.*:'FW_INTERNAL_FRANCE_CSS'</substitute><!--CSS-->
-		<substitute>\d{3}\w*:'FW_NATGSM_FRANCE_CSS'</substitute><!--CSS-->
-	</template>
-	<template>
-		<name>urgentpriority</name>
-		<substitute>f:'t'</substitute><!--CSS-->
-	</template>
-</xml>
-
-<!--Gateway-->
 <!--
 	<template>
-		<name>default</name>
-		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
-		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
-		<substitute>7\d{4}:'77'+*</substitute>
-		<substitute>8\d{4}:'88'+*</substitute>
-		<substitute>\d{5}:'33'+*</substitute>
-	</template>
-	<template>
-		<name>devicecss</name>
-		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_DEVICE_CSS'</substitute>
-	</template>
-	<template>
-		<name>calledcss</name>
-		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_CALLED_OUT_CSS'</substitute>
-	</template>
-	<template>
-		<name>callingcss</name>
-		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_CALLING_OUT_CSS'</substitute>
-	</template>
-	<template>
-		<name>false</name>
-		<substitute>.*:'f'</substitute>
-	</template>
-	<template>
-		<name>prefixe</name>
-		<substitute>.*:'33'</substitute>
-	</template>
--->
-
-
-<!--Phone-->
-<!--
-<template>
 		<name>default</name>
 		<substitute>defaut:'DEFAULT_P'</substitute>
 		<substitute>7\d{4}:'77'+*</substitute>
@@ -135,8 +64,113 @@ Regex example (normal java regex):
 		<name>urgentpriority</name>
 		<substitute>f:'t'</substitute>
 	</template>
+-->
+<!--ANALOG-->
+<!--
 	<template>
-		<name>subscribecss</name>
-		<substitute>.*:'SUBSCRIBE_CSS'</substitute>
+		<name>default</name>
+		<substitute>defaut:'DEFAULT_P'</substitute>
+		<substitute>7\d{4}:'77'+*</substitute>
+		<substitute>8\d{4}:'88'+*</substitute>
+		<substitute>9:'999'</substitute>
+		<substitute>0:'000'</substitute>
+		<substitute>\d{5}:'310'+*_4*</substitute>
+	</template>
+	<template>
+		<name>devicepool</name>
+		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
+		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
+	</template>
+	<template>
+		<name>devicecss</name>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_DEVICE_CSS'</substitute>
+	</template>
+	<template>
+		<name>css</name>
+		<substitute>\d{3}tout.*:'ALL_CSS'</substitute>
+		<substitute>\d{3}international:'ALL_CSS'</substitute>
+		<substitute>\d{3}interne:'INTERNAL_NETHERLAND_CSS'</substitute>
+		<substitute>\d{3}\w*:'NATGSMSPC_NETHERLAND_CSS'</substitute>
+	</template>
+	<template>
+		<name>forwardcss</name>
+		<substitute>\d{3}interne.*:'FW_INTERNAL_NETHERLAND_CSS'</substitute>
+		<substitute>\d{3}\w*:'FW_NATGSM_NETHERLAND_CSS'</substitute>
 	</template>
 -->
+<!--Gateway-->
+<!--
+	<template>
+		<name>default</name>
+		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
+		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
+	</template>
+	<template>
+		<name>devicecss</name>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_DEVICE_CSS'</substitute>
+	</template>
+	<template>
+		<name>calledcss</name>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_CALLED_OUT_CSS'</substitute>
+	</template>
+	<template>
+		<name>callingcss</name>
+		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_CALLING_OUT_CSS'</substitute>
+	</template>
+	<template>
+		<name>prefixe</name>
+		<substitute>\d{5}:*Get PREFIXXX*</substitute>
+	</template>
+-->
+
+<!--Phone-->
+
+	<template>
+		<name>default</name>
+		<substitute>defaut:'DEFAULT_P'</substitute>
+		<substitute>7\d{4}:'77'+*</substitute>
+		<substitute>8\d{4}:'88'+*</substitute>
+		<substitute>9:'999'</substitute>
+		<substitute>0:'000'</substitute>
+		<substitute>\d{5}:'440'+*_4*</substitute>
+	</template>
+	<template>
+		<name>devicepool</name>
+		<substitute>^(?!DP078|DP098).*$:*delete*</substitute>
+		<substitute>DP078SRST:'078_SRST_DP'</substitute>
+		<substitute>DP078:'078_DP'</substitute>
+		<substitute>DP098SRST:'098_SRST_DP'</substitute>
+		<substitute>DP098:'098_DP'</substitute>
+	</template>
+	<template>
+		<name>devicecss</name>
+		<substitute>.*:*Get Device Pool**5_**_3*+'_DEVICE_CSS'</substitute>
+	</template>
+	<template>
+		<name>css</name>
+		<substitute>\d{3}tout.*:'ALL_CSS'</substitute>
+		<substitute>\d{3}international:'ALL_CSS'</substitute>
+		<substitute>\d{3}interne:'INTERNAL_UK_CSS'</substitute>
+		<substitute>\d{3}national.*:'NATGSMSPC_UK_CSS'</substitute>
+		<substitute>\d{3}\w*:'ALL_CSS'</substitute>
+	</template>
+	<template>
+		<name>forwardcss</name>
+		<substitute>\d{3}interne:'FW_INTERNAL_UK_CSS'</substitute>
+		<substitute>\d{3}\w*:'FW_NATGSM_UK_CSS'</substitute>
+	</template>
+	<template>
+		<name>urgent</name>
+		<substitute>f:'t'</substitute>
+	</template>
+
+<!--End Users-->
+<!--
+	<template>
+		<name>default</name>
+		<substitute>7\d{4}:'77'+*</substitute>
+		<substitute>8\d{4}:'88'+*</substitute>
+		<substitute>\d{5}:'440'+*_4*</substitute>
+	</template>
+-->
+</xml>

@@ -12,6 +12,7 @@ The header name is a regex pattern
 <xml>
 
 	<!--FXS ports-->
+<!--
 	<headers>
 		<header>FORWARD .* CSS:forwardcss</header>
 		<header>FORWARD .* CALLING SEARCH SPACE:forwardcss</header>
@@ -23,7 +24,22 @@ The header name is a regex pattern
 		<header>FORWARD .* DESTINATION:default</header>
 		<header>URGENT PRIORITY:urgentpriority</header>
 	</headers>
-
+-->
+	<!--ANALOG-->
+<!--
+	<headers>
+		<header>FORWARD .* CSS \d:forwardcss</header>
+		<header>FORWARD .* CALLING SEARCH SPACE \d:forwardcss</header>
+		<header>DEVICE POOL:devicepool</header>
+		<header>.*CALLING SEARCH SPACE \d:devicecss</header>
+		<header>DIRECTORY NUMBER \d:default</header>
+		<header>EXTERNAL PHONE NUMBER MASK \d:default</header>
+		<header>ROUTE PARTITION \d:default</header>
+		<header>LINE CSS \d:css</header>
+		<header>FORWARD .* DESTINATION \d:default</header>
+		<header>URGENT PRIORITY:'t'</header>
+	</headers>
+-->
 <!--Gateway-->
 <!--
 	<headers>
@@ -31,25 +47,36 @@ The header name is a regex pattern
 		<header>.*CALLING SEARCH SPACE:devicecss</header>
 		<header>CALLED PARTY TRANSFORMATION CSS:calledcss</header>
 		<header>CALLING PARTY TRANSFORMATION CSS:callingcss</header>
-		<header>USE DEVICE POOL CALLED PARTY TRANSFORMATION CSS:false</header>
-		<header>USE DEVICE POOL CALLING PARTY TRANSFORMATION CSS:false</header>
+		<header>USE DEVICE POOL CALLED PARTY TRANSFORMATION CSS:'f'</header>
+		<header>USE DEVICE POOL CALLING PARTY TRANSFORMATION CSS:'f'</header>
 		<header>PREFIX DN:prefixe</header>
 	</headers>
 -->
 
 <!--Phone-->
-<!--
+
 	<headers>
 		<header>Forward .* CSS \d:forwardcss</header>
-		<header>Device Pool:default</header>
+		<header>Device Pool:devicepool</header>
 		<header>CSS:devicecss</header>
-		<header>AAR CSS:devicecss</header>
-		<header>Device Subscribe CSS:subscribecss</header>
+		<header>AAR CSS:''</header>
+		<header>AAR Group.*:''</header>
+		<header>Device Subscribe CSS:'SUBSCRIBE_CSS'</header>
 		<header>Directory Number \d:default</header>
+		<header>External Phone Number Mask \d:default</header>
 		<header>Route Partition \d:default</header>
 		<header>Line CSS \d:css</header>
 		<header>Forward .* Destination \d:default</header>
-		<header>Urgent Priority \d:urgentpriority</header>
+		<header>Secondary CSS for Forward All \d:''</header>
+		<header>Urgent Priority \d:urgent</header>
+	</headers>
+
+<!--End User-->
+<!--
+	<headers>
+		<header>TELEPHONE NUMBER:default</header>
+		<header>SUBSCRIBE CSS:'SUBSCRIBE_CSS'</header>
+		<header>ACCESS CONTROL GROUP \d:''</header>
 	</headers>
 -->
 </xml>

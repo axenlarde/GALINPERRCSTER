@@ -7,11 +7,13 @@ Overal configuration file
 		<!--Misc-->
 		<log4j>DEBUG</log4j><!--Logging level : ERROR,INFO,DEBUG-->
 		<separator>,</separator>
+		<seperatorescaper>",'</seperatorescaper><!--To detect separator escaper--><!--Example dsd,"toto,jkljl",dzz should be parsed ignoring this middle , because escaped by "-->
+		<separatorsubstitute>#;#</separatorsubstitute><!--Used to replace separator when found inside an escaped field-->
 		<allowedfiles>txt,csv</allowedfiles>
 		<filedirectory>Files</filedirectory>
 		<templatefile>templateFile.xml</templatefile>
 		<substitutefile>substituteFile.xml</substitutefile>
-		<deleteifnomatch>true</deleteifnomatch><!--true,false-->
+		<deleteifnomatch>true</deleteifnomatch><!--true,false--><!--If no match were found for a given line, we delete the wole line-->
 		<donotoverwrite>true</donotoverwrite><!--true,false-->
 		<newfiledirectory>Updated</newfiledirectory><!--Directory name to get the updated files-->
 		<checkforintegrity>true</checkforintegrity><!--true,false-->

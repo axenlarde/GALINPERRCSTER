@@ -354,8 +354,8 @@ public class UsefulMethod
 				}
 			}
 		
-		Variables.getLogger().debug("Value before : "+currentValue);
-		Variables.getLogger().debug("Value after : "+mySB.toString());
+		//Variables.getLogger().debug("Value before : "+currentValue);
+		//Variables.getLogger().debug("Value after : "+mySB.toString());
 		
 		return mySB.toString();
 		}
@@ -621,6 +621,67 @@ public class UsefulMethod
 		if(value == null)throw new Exception("lineValue should not be null. It probably means that the provided column name doesn't exists : "+columnName);
 		
 		return value;
+		}
+	
+	/**
+	 * Used to manage separator escaper such as dsds,"toto,titi",zzae
+	 * @throws  
+	 */
+	public static String manageEscaper(String line, int index) throws Exception
+		{
+		try
+			{
+			String[] escapers = UsefulMethod.getTargetOption("seperatorescaper").split(",");
+			String separator = UsefulMethod.getTargetOption("separator");
+			String substitute = UsefulMethod.getTargetOption("separatorsubstitute");
+			
+			for(String escaper : escapers)
+				{
+				if(line.contains(escaper))
+					{
+					//We check if there is 2 consecutive escaper
+					if(line.split(escaper).length>2)
+						{
+						String[] temp = line.split(escaper);
+						for(int b=1; b<temp.length-1; b++)
+							{
+							String s = temp[b];
+							
+							String toTest = line.substring(line.indexOf(s)-2, line.indexOf(s)+s.length()+2);
+							Variables.getLogger().debug("# "+toTest);
+							if((toTest.startsWith(separator+escaper)) && (toTest.endsWith(escaper+separator)))
+								{
+								String newValue = s.replaceAll(separator, substitute);
+								line = line.replace(s, newValue);
+								Variables.getLogger().debug("Line "+index+" escaper managed, old value "+s+" new value "+newValue);
+								}
+							}
+						
+						/*
+						//We now extract the value inside two escaper
+						Pattern p = Pattern.compile(separator+escaper+"\\w*"+separator+"\\w*"+escaper+separator);
+						Matcher m = p.matcher(line);
+						
+						while(m.find())
+							{
+							//Variables.getLogger().debug("Line "+index+" before :"+line);
+							String currentValue = m.group();
+							currentValue = currentValue.substring(1, currentValue.length()-1);//To remove the first and last digit
+							String newValue = currentValue.replace(separator, substitute);
+							line = line.replace(currentValue, newValue);
+							Variables.getLogger().debug("Line "+index+" escaper managed, old value "+currentValue+" new value "+newValue);
+							//Variables.getLogger().debug("Line "+index+" after :"+line);
+							}*/
+						}
+					}
+				}
+			}
+		catch (Exception e)
+			{
+			Variables.getLogger().error("Error : "+e.getMessage(),e);
+			throw new Exception(e);
+			}
+		return line;
 		}
 	
 	/*2018*//*Alexandre RATEL 8)*/

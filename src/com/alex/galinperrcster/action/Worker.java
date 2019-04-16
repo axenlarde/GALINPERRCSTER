@@ -88,6 +88,13 @@ public class Worker
 				{
 				Variables.getLogger().info("Processing the following file : "+ftp.getFileName());
 				
+				//We manage separator escaper
+				Variables.getLogger().debug("Checking for escapers");
+				for(int a=0; a<ftp.getLines().size(); a++)
+					{
+					ftp.getLines().set(a, UsefulMethod.manageEscaper(ftp.getLines().get(a), a+2));
+					}
+				
 				//If asked we check the file integrity
 				if(UsefulMethod.getTargetOption("checkforintegrity").equals("true"))
 					{
@@ -110,7 +117,7 @@ public class Worker
 					int index = j+2;
 					String line = ftp.getLines().get(j);
 					
-					Variables.getLogger().info("Line "+index+" before : "+line);
+					//Variables.getLogger().info("Line "+index+" before : "+line);
 					
 					boolean modified = false;
 					boolean toDelete = false;
@@ -137,7 +144,7 @@ public class Worker
 									{
 									//No template have been found so we just apply the pattern has it is. Normally it is what the user asked
 									params[i] = UsefulMethod.doRegex(params[i], h.getTemplateName(), ftp, j);
-									Variables.getLogger().debug("Line "+index+" new value after replacement : "+params[i]);
+									//Variables.getLogger().debug("Line "+index+" new value after replacement : "+params[i]);
 									modified = true;
 									
 									continue;//To avoid to use the substitute template
@@ -216,8 +223,17 @@ public class Worker
 							if(a != params.length-1)newLine.append(separator);//To remove the last separator
 							}
 						
-						ftp.getLines().set(j, newLine.toString());
-						Variables.getLogger().info("Line "+index+" after : "+ftp.getLines().get(j));
+						String strNewLine = newLine.toString();
+						
+						//We replace the escaped value
+						String sub = UsefulMethod.getTargetOption("separatorsubstitute");
+						if(strNewLine.contains(sub))
+							{
+							strNewLine = strNewLine.replaceAll(sub, separator);
+							}
+						
+						ftp.getLines().set(j, strNewLine);
+						//Variables.getLogger().info("Line "+index+" after : "+ftp.getLines().get(j));
 						}
 					else
 						{

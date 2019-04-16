@@ -28,9 +28,9 @@ public class Main
 	public Main()
 		{
 		//Set the software name
-		Variables.setSoftwareName("WOOT");
+		Variables.setSoftwareName("GALINPERRCSTER");
 		//Set the software version
-		Variables.setSoftwareVersion("1.2");
+		Variables.setSoftwareVersion("1.0");
 		
 		/****************
 		 * Initialization of the logging
