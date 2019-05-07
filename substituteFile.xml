@@ -17,8 +17,9 @@ use + to concatenate values
 * just paste the original string
 *delete* delete the entire line
 *Get Column name*regex get the content of the column of the same line and then apply the regex
+AND to concatenate regex : Example : \d{5}AND*Get Device Pool*DP067.*
 
-You can use more than multiple ones : *9_**_7**M* : DP067loadSRST gives 067LOAD
+You can concatenate : *9_**_7**M* : DP067loadSRST gives 067LOAD
 
 Regex example (normal java regex):
  - \d{x} match 3 digit
