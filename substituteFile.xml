@@ -16,13 +16,14 @@ use + to concatenate values
 *xSy* split the string using the y character and then keeps the x occurrence
 * just paste the original string
 *delete* delete the entire line
-*Get xxxx* get the content of the column xxxx of the same line
+*Get Column name*regex get the content of the column of the same line and then apply the regex
 
-You can use more than multiple ones : *5_**_3**M*
+You can use more than multiple ones : *9_**_7**M* : DP067loadSRST gives 067LOAD
 
 Regex example (normal java regex):
  - \d{x} match 3 digit
  - ^(?!DP002).*$ match everything except DP002
+ - ^$ match empty string
 
 -->
 <xml>
@@ -65,45 +66,16 @@ Regex example (normal java regex):
 		<substitute>f:'t'</substitute>
 	</template>
 -->
-<!--ANALOG-->
-<!--
-	<template>
-		<name>default</name>
-		<substitute>defaut:'DEFAULT_P'</substitute>
-		<substitute>7\d{4}:'77'+*</substitute>
-		<substitute>8\d{4}:'88'+*</substitute>
-		<substitute>9:'999'</substitute>
-		<substitute>0:'000'</substitute>
-		<substitute>\d{5}:'310'+*_4*</substitute>
-	</template>
-	<template>
-		<name>devicepool</name>
-		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
-		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
-	</template>
-	<template>
-		<name>devicecss</name>
-		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_DEVICE_CSS'</substitute>
-	</template>
-	<template>
-		<name>css</name>
-		<substitute>\d{3}tout.*:'ALL_CSS'</substitute>
-		<substitute>\d{3}international:'ALL_CSS'</substitute>
-		<substitute>\d{3}interne:'INTERNAL_NETHERLAND_CSS'</substitute>
-		<substitute>\d{3}\w*:'NATGSMSPC_NETHERLAND_CSS'</substitute>
-	</template>
-	<template>
-		<name>forwardcss</name>
-		<substitute>\d{3}interne.*:'FW_INTERNAL_NETHERLAND_CSS'</substitute>
-		<substitute>\d{3}\w*:'FW_NATGSM_NETHERLAND_CSS'</substitute>
-	</template>
--->
+
 <!--Gateway-->
 <!--
 	<template>
 		<name>default</name>
 		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
 		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
+		<substitute>7\d{4}:'77'+*</substitute>
+		<substitute>8\d{4}:'88'+*</substitute>
+		<substitute>\d{5}:'33'+*</substitute>
 	</template>
 	<template>
 		<name>devicecss</name>
@@ -118,29 +90,41 @@ Regex example (normal java regex):
 		<substitute>.*:*Get DEVICE POOL**5_**_3*+'_CALLING_OUT_CSS'</substitute>
 	</template>
 	<template>
+		<name>false</name>
+		<substitute>.*:'f'</substitute>
+	</template>
+	<template>
 		<name>prefixe</name>
-		<substitute>\d{5}:*Get PREFIXXX*</substitute>
+		<substitute>.*:'33'</substitute>
 	</template>
 -->
+
 
 <!--Phone-->
 
 	<template>
 		<name>default</name>
 		<substitute>defaut:'DEFAULT_P'</substitute>
+	</template>
+	<template>
+		<name>numbers</name>
 		<substitute>7\d{4}:'77'+*</substitute>
 		<substitute>8\d{4}:'88'+*</substitute>
 		<substitute>9:'999'</substitute>
 		<substitute>0:'000'</substitute>
-		<substitute>\d{5}:'440'+*_4*</substitute>
+		<substitute>\d{5}AND*Get Device Pool*DP067.*:'360'+*_4*</substitute>
+		<substitute>\d{5}AND*Get Device Pool*DP068.*:'480'+*_4*</substitute>
+		<substitute>\d{5}AND*Get Device Pool*DP071.*:'410'+*_4*</substitute>
+		<substitute>\d{5}AND*Get Device Pool*DP073.*:'310'+*_4*</substitute>
+		<substitute>\d{5}AND*Get Device Pool*DP079.*:'490'+*_4*</substitute>
+		<substitute>\d{5}AND*Get Device Pool*DP080.*:'340'+*_4*</substitute>
+		<substitute>\d{5}AND*Get Device Pool*DP082.*:'320'+*_4*</substitute>
 	</template>
 	<template>
 		<name>devicepool</name>
-		<substitute>^(?!DP078|DP098).*$:*delete*</substitute>
-		<substitute>DP078SRST:'078_SRST_DP'</substitute>
-		<substitute>DP078:'078_DP'</substitute>
-		<substitute>DP098SRST:'098_SRST_DP'</substitute>
-		<substitute>DP098:'098_DP'</substitute>
+		<substitute>^(?!DP067.*|DP068.*|DP071.*|DP073.*|DP079.*|DP080.*|DP082.*).*$:*delete*</substitute>
+		<substitute>DP\d{3}SRST:*5_**_3*+'_SRST_DP'</substitute>
+		<substitute>DP\d{3}:*_3*+'_DP'</substitute>
 	</template>
 	<template>
 		<name>devicecss</name>
@@ -148,29 +132,43 @@ Regex example (normal java regex):
 	</template>
 	<template>
 		<name>css</name>
-		<substitute>\d{3}tout.*:'ALL_CSS'</substitute>
-		<substitute>\d{3}international:'ALL_CSS'</substitute>
-		<substitute>\d{3}interne:'INTERNAL_UK_CSS'</substitute>
-		<substitute>\d{3}national.*:'NATGSMSPC_UK_CSS'</substitute>
+		<substitute>073national.*:'NATGSMSPC_NETHERLAND_CSS'</substitute>
 		<substitute>\d{3}\w*:'ALL_CSS'</substitute>
 	</template>
 	<template>
 		<name>forwardcss</name>
-		<substitute>\d{3}interne:'FW_INTERNAL_UK_CSS'</substitute>
-		<substitute>\d{3}\w*:'FW_NATGSM_UK_CSS'</substitute>
+		<substitute>067\w*:'FW_NATGSM_HUNGARY_CSS'</substitute>
+		<substitute>068\w*:'FW_NATGSM_POLAND_CSS'</substitute>
+		<substitute>071\w*:'FW_NATGSM_SWITZERLAND_CSS'</substitute>
+		<substitute>073\w*:'FW_NATGSM_NETHERLAND_CSS'</substitute>
+		<substitute>079\w*:'FW_NATGSM_GERMANY_CSS'</substitute>
+		<substitute>080\w*:'FW_NATGSM_SPAIN_CSS'</substitute>
+		<substitute>082\w*:'FW_NATGSM_BELGIUM_CSS'</substitute>
 	</template>
 	<template>
 		<name>urgent</name>
 		<substitute>f:'t'</substitute>
 	</template>
+	<template>
+		<name>voicemail</name>
+		<substitute>.+:'CUC_SIP_TRUNK'</substitute>
+	</template>
+
 
 <!--End Users-->
 <!--
 	<template>
-		<name>default</name>
+		<name>numbers</name>
+		<substitute>^$:''</substitute>
 		<substitute>7\d{4}:'77'+*</substitute>
 		<substitute>8\d{4}:'88'+*</substitute>
-		<substitute>\d{5}:'440'+*_4*</substitute>
+		<substitute>*If|Device Pool|DP067.*:'360'+*_4*</substitute>
+		<substitute>*If|Device Pool|DP068.*:'480'+*_4*</substitute>
+		<substitute>*If|Device Pool|DP071.*:'410'+*_4*</substitute>
+		<substitute>*If|Device Pool|DP073.*:'310'+*_4*</substitute>
+		<substitute>*If|Device Pool|DP079.*:'490'+*_4*</substitute>
+		<substitute>*If|Device Pool|DP080.*:'340'+*_4*</substitute>
+		<substitute>*If|Device Pool|DP082.*:'320'+*_4*</substitute>
 	</template>
 -->
 </xml>

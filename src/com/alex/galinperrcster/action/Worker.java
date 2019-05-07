@@ -11,6 +11,7 @@ import com.alex.galinperrcster.misc.FileToProcess;
 import com.alex.galinperrcster.misc.Header;
 import com.alex.galinperrcster.misc.Substitute;
 import com.alex.galinperrcster.misc.SubstituteTemplate;
+import com.alex.galinperrcster.utils.ClearSpecialChar;
 import com.alex.galinperrcster.utils.UsefulMethod;
 import com.alex.galinperrcster.utils.Variables;
 
@@ -42,6 +43,7 @@ public class Worker
 		try
 			{
 			String separator = UsefulMethod.getTargetOption("separator");
+			boolean clearSC = Boolean.parseBoolean(UsefulMethod.getTargetOption("clearspecialcharacters"));
 			
 			/*****************************
 			 * We get the following files :
@@ -125,6 +127,7 @@ public class Worker
 					
 					for(int i=0; i<headers.length; i++)
 						{
+						String column = headers[i];
 						boolean foundMatchingHeader = false;
 						for(Header h : headerList)
 							{
@@ -152,22 +155,32 @@ public class Worker
 								
 								for(Substitute sub : myTemplate.getSubstituteList())
 									{
-									String pattern = sub.getPattern();
+									String patterns[] = sub.getPattern().split("AND");//AND is to manage multiple condition
+									boolean match = true;
 									String value = params[i];
 									
-									if(pattern.startsWith("*Get "))//Manage the *Get* special feature
+									for(String pattern : patterns)
 										{
-										String columnName = pattern.split("\\*")[1].substring(4);//To get the column name
-										//We now get the value according to the column name
-										value = UsefulMethod.getValue(ftp, columnName, j);
+										if(pattern.startsWith("*Get "))//Manage the *Get* special feature
+											{
+											String columnName = pattern.split("\\*")[1].substring(4);//To get the column name
+											//We now get the value according to the column name
+											value = UsefulMethod.getValue(ftp, columnName, j);
+											
+											String st = "*Get "+columnName+"*";
+											pattern = pattern.substring(st.length());//Remove the get pattern
+											}
 										
-										String st = "*Get "+columnName+"*";
-										pattern = pattern.substring(st.length());//Remove the get pattern
+										if(!Pattern.matches(pattern, value))
+											{
+											match = false;
+											break;
+											}
 										}
-									
-									if((i<params.length) && (Pattern.matches(pattern, value)))
+										
+									if((i<params.length) && match)
 										{
-										Variables.getLogger().debug("Line "+index+" the value \""+value+"\" matched the pattern \""+pattern+"\"");
+										Variables.getLogger().debug("Line "+index+" column "+column+" the value \""+value+"\" matched the pattern "+sub.getPattern());
 										
 										/**
 										 * If the *delete* tag is found we delete the whole line
@@ -175,15 +188,19 @@ public class Worker
 										if(sub.getReplaceBy().equals("*delete*"))
 											{
 											toDelete = true;
-											Variables.getLogger().debug("Line "+index+" the *delete* tag matched the following value : "+params[i]);
+											Variables.getLogger().debug("Line "+index+" column "+column+" the *delete* tag matched the value "+params[i]);
 											}
 										else
 											{
+											String oldValue = params[i];
+											if(clearSC)
+												{
+												params[i] = ClearSpecialChar.translate(params[i]);
+												}
 											params[i] = UsefulMethod.doRegex(params[i], sub.getReplaceBy(), ftp, j);
-											Variables.getLogger().debug("Line "+index+" new value after replacement : "+params[i]);
+											Variables.getLogger().debug("Line "+index+" column "+column+", "+oldValue+" was replaced by "+params[i]);
 											modified = true;
 											}
-										
 										break;//To avoid matching another substitute
 										}
 									}
@@ -219,7 +236,6 @@ public class Worker
 						for(int a=0; a<params.length; a++)
 							{
 							newLine.append(params[a]);
-							//if(a != params.length-1)newLine.append(UsefulMethod.getTargetOption("separator"));//To remove the last separator
 							if(a != params.length-1)newLine.append(separator);//To remove the last separator
 							}
 						

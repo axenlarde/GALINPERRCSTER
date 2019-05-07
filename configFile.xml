@@ -7,7 +7,7 @@ Overal configuration file
 		<!--Misc-->
 		<log4j>DEBUG</log4j><!--Logging level : ERROR,INFO,DEBUG-->
 		<separator>,</separator>
-		<seperatorescaper>",'</seperatorescaper><!--To detect separator escaper--><!--Example dsd,"toto,jkljl",dzz should be parsed ignoring this middle , because escaped by "-->
+		<seperatorescaper>"</seperatorescaper><!--One or more separated by a comma--><!--To detect separator escaper--><!--Example dsd,"toto,jkljl",dzz should be parsed ignoring this middle , because escaped by "-->
 		<separatorsubstitute>#;#</separatorsubstitute><!--Used to replace separator when found inside an escaped field-->
 		<allowedfiles>txt,csv</allowedfiles>
 		<filedirectory>Files</filedirectory>
@@ -17,5 +17,6 @@ Overal configuration file
 		<donotoverwrite>true</donotoverwrite><!--true,false-->
 		<newfiledirectory>Updated</newfiledirectory><!--Directory name to get the updated files-->
 		<checkforintegrity>true</checkforintegrity><!--true,false-->
+		<clearspecialcharacters>true</clearspecialcharacters><!--true,false-->
 	</config>
 </xml>

@@ -648,7 +648,7 @@ public class UsefulMethod
 							String s = temp[b];
 							
 							String toTest = line.substring(line.indexOf(s)-2, line.indexOf(s)+s.length()+2);
-							Variables.getLogger().debug("# "+toTest);
+							//Variables.getLogger().debug("# "+toTest);
 							if((toTest.startsWith(separator+escaper)) && (toTest.endsWith(escaper+separator)))
 								{
 								String newValue = s.replaceAll(separator, substitute);
